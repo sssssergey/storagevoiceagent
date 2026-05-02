@@ -1,0 +1,148 @@
+{
+  "name": "Crown Storage — Book Consultation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "book-consultation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wh-1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "book-consultation"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "strict", "version": 2 },
+          "combinator": "and",
+          "conditions": [
+            { "id": "c1", "leftValue": "={{ $json.body.customer_name }}", "rightValue": "", "operator": { "type": "string", "operation": "notEmpty", "singleValue": true } },
+            { "id": "c2", "leftValue": "={{ $json.body.customer_phone }}", "rightValue": "", "operator": { "type": "string", "operation": "notEmpty", "singleValue": true } },
+            { "id": "c3", "leftValue": "={{ $json.body.date }}", "rightValue": "", "operator": { "type": "string", "operation": "notEmpty", "singleValue": true } },
+            { "id": "c4", "leftValue": "={{ $json.body.time }}", "rightValue": "", "operator": { "type": "string", "operation": "notEmpty", "singleValue": true } }
+          ]
+        },
+        "options": {}
+      },
+      "id": "if-1",
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const body = $('Webhook').first().json.body || {};\nconst tz = 'America/Chicago';\n\nconst start = DateTime.fromFormat(body.date + ' ' + body.time, 'yyyy-MM-dd h:mm a', { zone: tz });\nif (!start.isValid) {\n  throw new Error('Invalid date/time: ' + body.date + ' ' + body.time + ' — ' + start.invalidReason);\n}\nconst end = start.plus({ minutes: 30 });\n\nreturn [{\n  json: {\n    startISO: start.toISO(),\n    endISO: end.toISO(),\n    customer_name: body.customer_name,\n    customer_phone: body.customer_phone,\n    shipment_size: body.shipment_size || 'not specified',\n    date: body.date,\n    time: body.time\n  }\n}];"
+      },
+      "id": "compose-1",
+      "name": "Compose DateTime",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "primary",
+          "mode": "list",
+          "cachedResultName": "primary"
+        },
+        "start": "={{ $json.startISO }}",
+        "end": "={{ $json.endISO }}",
+        "additionalFields": {
+          "summary": "=Sales Consultation — {{ $json.customer_name }}",
+          "description": "=Phone: {{ $json.customer_phone }}\nEstimated storage: {{ $json.shipment_size }}\nBooked via Crown Storage AI Voice Agent",
+          "timezone": "America/Chicago"
+        }
+      },
+      "id": "cal-1",
+      "name": "Create Calendar Event",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [900, 200],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "4jyvhycbDavJ4urL",
+          "name": "Google Callendar Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "szergej.soros@gmail.com",
+        "subject": "=Booking confirmed — {{ $('Compose DateTime').item.json.customer_name }} on {{ $('Compose DateTime').item.json.date }} {{ $('Compose DateTime').item.json.time }}",
+        "emailType": "html",
+        "message": "=<h2>Consultation booked</h2><p><strong>Name:</strong> {{ $('Compose DateTime').item.json.customer_name }}</p><p><strong>Phone:</strong> {{ $('Compose DateTime').item.json.customer_phone }}</p><p><strong>Estimated storage:</strong> {{ $('Compose DateTime').item.json.shipment_size }}</p><p><strong>When:</strong> {{ $('Compose DateTime').item.json.date }} at {{ $('Compose DateTime').item.json.time }} (America/Chicago)</p><p><strong>Calendar event ID:</strong> {{ $json.id }}</p><hr><p><em>Booked via Crown Storage AI Voice Agent</em></p>",
+        "options": {}
+      },
+      "id": "gm-1",
+      "name": "Send Confirmation",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1120, 200],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "1fvjOhyOH0vDkwjl",
+          "name": "szergej.soros@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, booking_id: $('Create Calendar Event').item.json.id, confirmed_date: $('Compose DateTime').item.json.date, confirmed_time: $('Compose DateTime').item.json.time, message: 'Consultation booked successfully' }) }}",
+        "options": {}
+      },
+      "id": "rok-1",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1340, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": false,\n  \"error\": \"missing_fields\"\n}",
+        "options": { "responseCode": 400 }
+      },
+      "id": "rbad-1",
+      "name": "Respond Missing Fields",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [680, 420]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Validate Input", "type": "main", "index": 0 }]]
+    },
+    "Validate Input": {
+      "main": [
+        [{ "node": "Compose DateTime", "type": "main", "index": 0 }],
+        [{ "node": "Respond Missing Fields", "type": "main", "index": 0 }]
+      ]
+    },
+    "Compose DateTime": {
+      "main": [[{ "node": "Create Calendar Event", "type": "main", "index": 0 }]]
+    },
+    "Create Calendar Event": {
+      "main": [[{ "node": "Send Confirmation", "type": "main", "index": 0 }]]
+    },
+    "Send Confirmation": {
+      "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

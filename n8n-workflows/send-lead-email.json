@@ -1,0 +1,110 @@
+{
+  "name": "Crown Storage — Send Lead Email",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "send-lead-email",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wh-1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "send-lead-email"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "strict", "version": 2 },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.body.customer_name }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEmpty", "singleValue": true }
+            },
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.body.customer_phone }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEmpty", "singleValue": true }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "if-1",
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "szergej.soros@gmail.com",
+        "subject": "=New Crown Storage Lead: {{ $json.body.customer_name }}",
+        "emailType": "html",
+        "message": "=<h2>New Lead from AI Voice Agent</h2><p><strong>Name:</strong> {{ $json.body.customer_name }}</p><p><strong>Phone:</strong> {{ $json.body.customer_phone }}</p><p><strong>Estimated Shipment Size:</strong> {{ $json.body.shipment_size || '—' }}</p><p><strong>Notes:</strong> {{ $json.body.notes || '—' }}</p><p><strong>Received:</strong> {{ $now.toISO() }}</p><hr><p><em>Sent automatically by Crown Storage AI Voice Agent via n8n</em></p>",
+        "options": {}
+      },
+      "id": "gm-1",
+      "name": "Send Lead Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [720, 200],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "1fvjOhyOH0vDkwjl",
+          "name": "szergej.soros@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Lead email sent successfully\"\n}",
+        "options": {}
+      },
+      "id": "rok-1",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [960, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": false,\n  \"error\": \"missing_fields\"\n}",
+        "options": { "responseCode": 400 }
+      },
+      "id": "rbad-1",
+      "name": "Respond Missing Fields",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [720, 420]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Validate Input", "type": "main", "index": 0 }]]
+    },
+    "Validate Input": {
+      "main": [
+        [{ "node": "Send Lead Email", "type": "main", "index": 0 }],
+        [{ "node": "Respond Missing Fields", "type": "main", "index": 0 }]
+      ]
+    },
+    "Send Lead Email": {
+      "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

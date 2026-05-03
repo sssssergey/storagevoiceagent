@@ -1,31 +1,31 @@
 const faqs = [
   {
     q: "Can I access my unit at night?",
-    a: "Yes — gated access is 24/7 with your personal entry code. The office is staffed weekdays 9–6 and Saturdays 9–4.",
+    a: "Yes — gated access is twenty-four hours with a personal entry code. The office is staffed weekdays 9–6 and Saturdays 9–4.",
   },
   {
     q: "Do I need insurance?",
-    a: "Some kind of coverage is required. You can use ours ($12/month) or your existing homeowner's or renter's policy if it covers off-site storage.",
+    a: "Some kind of cover is required. You can use ours (£10 / month) or your existing contents policy if it covers off-site storage.",
   },
   {
     q: "How do I pay?",
-    a: "Autopay via credit card or ACH bank transfer. We don't accept cash on-site.",
+    a: "Direct Debit or card on autopay. We don't take cash on-site.",
   },
   {
     q: "What if I move out before my term is up?",
-    a: "Month-to-month means just 30 days written notice. On a 6-month commit, the move-in special is forfeited if you leave early — but no early-termination fee.",
+    a: "Month-to-month means thirty days' written notice. On a six-month commit the move-in special is forfeited if you leave early — but no early-termination fee.",
   },
   {
-    q: "Do you have boxes and supplies onsite?",
-    a: "Yes — boxes, packing tape, bubble wrap, mattress covers, and locks are at the office.",
+    q: "Do you sell boxes and supplies on-site?",
+    a: "Yes — boxes, packing tape, bubble wrap, mattress covers and locks are available at the office.",
   },
   {
-    q: "Do you store boats and RVs?",
-    a: "Yes, at our north location. Pricing depends on length — ask the sales rep when they call.",
+    q: "Do you store boats and motors?",
+    a: "Yes, at our north yard. Pricing depends on length — please ask the sales rep when they ring.",
   },
   {
     q: "What does climate-controlled actually mean?",
-    a: "We hold the unit between 55 and 80°F year-round, with humidity managed. Recommended for electronics, wood furniture, photos, documents, and instruments.",
+    a: "We hold the unit between 13 and 27°C year-round, with humidity managed. Recommended for electronics, wood furniture, photos, documents and instruments.",
   },
   {
     q: "How do I get my gate code?",
@@ -35,26 +35,52 @@ const faqs = [
 
 export default function FAQ() {
   return (
-    <section className="bg-warm py-20 sm:py-24">
-      <div className="mx-auto max-w-3xl px-6">
-        <h2 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-          Frequently asked
-        </h2>
-        <ul className="mt-10 divide-y divide-black/10 rounded-lg border border-black/5 bg-white">
-          {faqs.map((f) => (
-            <li key={f.q}>
-              <details className="group p-6">
-                <summary className="flex cursor-pointer list-none items-center justify-between text-base font-semibold text-ink">
-                  {f.q}
-                  <span className="ml-4 text-muted transition-transform group-open:rotate-45">
-                    +
-                  </span>
-                </summary>
-                <p className="mt-3 text-sm leading-6 text-muted">{f.a}</p>
-              </details>
-            </li>
-          ))}
-        </ul>
+    <section id="help" className="border-t border-rule bg-warm">
+      <div className="mx-auto max-w-7xl px-6 pt-24 pb-20 sm:pt-32 sm:pb-28">
+        <div className="grid grid-cols-12 gap-y-10 gap-x-6">
+          <header className="col-span-12 lg:col-span-4">
+            <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
+              <span className="text-ink">— 05</span>
+              <span className="ml-3">Common questions</span>
+            </div>
+            <h2 className="mt-6 font-serif text-5xl sm:text-6xl leading-[0.95] tracking-[-0.02em] text-brand-deep">
+              Frequently<br />
+              <em className="italic">asked</em>.
+            </h2>
+            <p className="mt-6 max-w-xs text-sm leading-[1.6] text-muted">
+              Eight quick answers. Anything else, ring or speak to our
+              assistant.
+            </p>
+          </header>
+
+          <ul className="col-span-12 lg:col-span-8 lg:border-l lg:border-rule lg:pl-12 border-t border-rule-strong lg:border-t-0">
+            {faqs.map((f, i) => (
+              <li key={f.q} className="border-b border-rule">
+                <details className="group">
+                  <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-6 sm:py-7">
+                    <div className="flex items-baseline gap-5">
+                      <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted tabular pt-1">
+                        Q.{String(i + 1).padStart(2, "0")}
+                      </span>
+                      <h3 className="font-serif text-xl sm:text-2xl leading-tight text-brand-deep">
+                        {f.q}
+                      </h3>
+                    </div>
+                    <span
+                      aria-hidden
+                      className="font-serif text-3xl leading-none text-accent transition-transform duration-300 group-open:rotate-45"
+                    >
+                      +
+                    </span>
+                  </summary>
+                  <p className="pb-7 pl-16 sm:pl-[5.5rem] pr-10 max-w-2xl text-sm sm:text-[15px] leading-[1.65] text-muted">
+                    {f.a}
+                  </p>
+                </details>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

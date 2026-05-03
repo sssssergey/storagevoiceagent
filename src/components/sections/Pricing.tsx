@@ -4,6 +4,7 @@ import { openConvaiWidget } from "@/components/ConvaiWidget";
 
 const tiers = [
   {
+    n: "01",
     name: "Small",
     size: "5 × 5",
     sqft: "≈ 25 sq ft",
@@ -12,22 +13,25 @@ const tiers = [
     popular: false,
   },
   {
+    n: "02",
     name: "Medium",
     size: "10 × 10",
     sqft: "≈ 100 sq ft",
     price: 129,
-    fits: "1-bedroom apartment with bed, couch, and boxes.",
+    fits: "A one-bedroom flat — bed, sofa, boxes.",
     popular: true,
   },
   {
+    n: "03",
     name: "Large",
     size: "10 × 20",
     sqft: "≈ 200 sq ft",
     price: 229,
-    fits: "2–3 bedroom house contents.",
+    fits: "Two-to-three bedroom house contents.",
     popular: false,
   },
   {
+    n: "04",
     name: "Extra Large",
     size: "10 × 30",
     sqft: "≈ 300 sq ft",
@@ -39,51 +43,84 @@ const tiers = [
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="bg-white py-20 sm:py-24">
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="max-w-3xl">
-          <h2 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-            Pricing
-          </h2>
-          <p className="mt-3 text-lg text-muted">
-            Month-to-month. First month free with a 6-month commit. Climate
-            control adds $30/month on any size.
+    <section id="tariffs" className="border-t border-rule bg-warm">
+      <div className="mx-auto max-w-7xl px-6 pt-24 pb-20 sm:pt-32 sm:pb-28">
+        <header className="grid grid-cols-12 gap-6 items-end">
+          <div className="col-span-12 lg:col-span-7">
+            <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
+              <span className="text-ink">— 04</span>
+              <span className="ml-3">Tariffs</span>
+            </div>
+            <h2 className="mt-6 font-serif text-5xl sm:text-6xl leading-[0.95] tracking-[-0.02em] text-brand-deep">
+              Honest pricing,<br />
+              <em className="italic">no</em> small print.
+            </h2>
+          </div>
+          <p className="col-span-12 lg:col-span-5 max-w-md text-sm leading-[1.6] text-muted lg:pb-2">
+            Month-to-month by default. First month complimentary on a six-month
+            commit. Climate control adds £30 / mo on any size.
           </p>
+        </header>
+
+        <div className="mt-16 border-t border-rule-strong">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            {tiers.map((t, i) => (
+              <li
+                key={t.n}
+                className={`relative flex flex-col p-7 sm:p-8 min-h-[340px]
+                  border-b border-rule
+                  ${i % 2 === 1 ? "border-l border-rule" : ""}
+                  ${i >= 2 ? "lg:border-l lg:border-rule" : ""}
+                  lg:border-b-0
+                  ${i > 0 ? "lg:border-l lg:border-rule" : ""}
+                  ${t.popular ? "bg-cream" : "bg-warm"}
+                `}
+              >
+                {t.popular && (
+                  <span className="absolute top-7 right-7 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-accent-hover">
+                    <span className="h-1.5 w-1.5 rounded-full bg-accent"></span>
+                    Most chosen
+                  </span>
+                )}
+
+                <div className="flex items-baseline gap-2 font-mono text-[10.5px] uppercase tracking-[0.2em] text-muted">
+                  <span className="text-ink">{t.n}</span>
+                  <span>/ {t.name}</span>
+                </div>
+
+                <div className="mt-2 font-mono text-[11px] tracking-wide text-muted">
+                  {t.size} &nbsp;·&nbsp; {t.sqft}
+                </div>
+
+                <div className="mt-auto pt-12">
+                  <p className="font-serif text-6xl leading-none text-brand-deep tabular">
+                    <span className="text-3xl align-top mr-1 text-brand-deep/70">£</span>
+                    {t.price}
+                  </p>
+                  <p className="mt-1 font-mono text-[10.5px] uppercase tracking-[0.2em] text-muted">
+                    per month
+                  </p>
+                  <p className="mt-5 max-w-[20ch] text-sm leading-[1.55] text-muted">
+                    {t.fits}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {tiers.map((t) => (
-            <li
-              key={t.name}
-              className={`relative rounded-lg border p-6 shadow-sm ${
-                t.popular
-                  ? "border-accent bg-warm"
-                  : "border-black/5 bg-white"
-              }`}
-            >
-              {t.popular && (
-                <span className="absolute -top-3 right-4 inline-flex items-center rounded-full bg-accent px-3 py-1 text-xs font-bold text-ink">
-                  Most popular
-                </span>
-              )}
-              <h3 className="text-lg font-semibold text-ink">{t.name}</h3>
-              <p className="text-sm text-muted">
-                {t.size} · {t.sqft}
-              </p>
-              <p className="mt-4">
-                <span className="text-3xl font-bold text-ink">${t.price}</span>
-                <span className="text-sm text-muted"> / month</span>
-              </p>
-              <p className="mt-3 text-sm leading-6 text-muted">{t.fits}</p>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-10 flex justify-center">
+
+        <div className="mt-12 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="max-w-md text-sm leading-[1.6] text-muted">
+            Not sure which size suits you? Our assistant will sort it in a
+            couple of minutes.
+          </p>
           <button
             type="button"
             onClick={openConvaiWidget}
-            className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-base font-semibold text-ink transition-colors hover:bg-accent-hover"
+            className="group inline-flex items-center gap-3 rounded-full border border-ink bg-transparent px-7 py-3.5 font-mono text-[11px] uppercase tracking-[0.2em] text-ink transition-colors hover:bg-ink hover:text-warm"
           >
-            Not sure which size? Ask our AI
+            Ask the assistant
+            <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
           </button>
         </div>
       </div>

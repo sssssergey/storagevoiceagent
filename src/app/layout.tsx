@@ -1,22 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inconsolata } from "next/font/google";
 import ConvaiWidget from "@/components/ConvaiWidget";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inconsolata = Inconsolata({
+  variable: "--font-inconsolata",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Crown Storage — Storage that gets out of your way",
+  title: "CRW Storage — Storage in London, quietly done well.",
   description:
-    "Climate-controlled storage units, 24/7 gated access, and a real person on call. Talk to our AI assistant to get a unit picked for you in under 5 minutes.",
+    "Climate-controlled storage in EC1, 24-hour gated access, and a real person on the line. Speak with our assistant to find the right room in five minutes.",
 };
 
 export default function RootLayout({
@@ -27,7 +24,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inconsolata.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-warm text-ink">
         {children}

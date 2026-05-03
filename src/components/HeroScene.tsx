@@ -1,10 +1,10 @@
-export default function HeroScene() {
+export default function HeroScene({ height }: { height?: number }) {
   return (
     <div className="relative w-full select-none">
       {/* Decorative aerial-warehouse tile */}
       <div
         className="relative overflow-hidden rounded-[28px] bg-stage shadow-[0_30px_70px_-30px_rgba(10,10,10,0.25),0_2px_0_0_rgba(255,255,255,0.6)_inset]"
-        style={{ aspectRatio: "5 / 6" }}
+        style={height ? { height } : { aspectRatio: "5 / 6" }}
         aria-label="Aerial view of CRW warehouse with live operations dashboard"
         role="img"
       >

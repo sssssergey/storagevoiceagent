@@ -1,15 +1,31 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { openConvaiWidget } from "@/components/ConvaiWidget";
 import HeroScene from "@/components/HeroScene";
 
 export default function Hero() {
+  const headingGroupRef = useRef<HTMLDivElement>(null);
+  const [headingHeight, setHeadingHeight] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    const el = headingGroupRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver(() => {
+      setHeadingHeight(el.offsetHeight);
+    });
+    obs.observe(el);
+    setHeadingHeight(el.offsetHeight);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <section className="relative bg-warm">
       <div className="relative mx-auto max-w-7xl px-6 pt-10 pb-16 sm:pt-14 sm:pb-20 lg:pt-16 lg:pb-24">
         <div className="grid grid-cols-12 gap-y-14 gap-x-10 items-start">
           {/* LEFT — copy column */}
           <div className="col-span-12 lg:col-span-6 lg:pt-10">
+            <div ref={headingGroupRef}>
             <h1
               className="font-display text-ink leading-[0.96] tracking-[-0.04em]"
               style={{ fontSize: "clamp(2.6rem, 5.6vw, 4.6rem)" }}
@@ -18,21 +34,21 @@ export default function Hero() {
                 className="rise inline-block"
                 style={{ animationDelay: "60ms" }}
               >
-                We move goods that
+                Storage You Can
               </span>
               <br />
               <span
                 className="rise inline-block"
                 style={{ animationDelay: "180ms" }}
               >
-                keep your business
+                Count On. Delivery
               </span>
               <br />
               <span
                 className="rise inline-block"
                 style={{ animationDelay: "300ms" }}
               >
-                moving.
+                You Can Track.
               </span>
             </h1>
 
@@ -45,6 +61,7 @@ export default function Hero() {
               delivery, we make sure your products get where they need to go —
               fast, safe, and stress-free.
             </p>
+            </div>
 
             <div
               className="rise mt-9 flex items-center gap-6"
@@ -109,7 +126,7 @@ export default function Hero() {
           {/* RIGHT — aerial warehouse + floating UI cards */}
           <div className="col-span-12 lg:col-span-6">
             <div className="rise" style={{ animationDelay: "240ms" }}>
-              <HeroScene />
+              <HeroScene height={headingHeight} />
             </div>
           </div>
         </div>

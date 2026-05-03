@@ -365,7 +365,7 @@ This is the body of the Code node. Mode: "Run Once for All Items". Language: Jav
 
 ```javascript
 try {
-  const TZ = "America/Chicago";
+  const TZ = "Europe/Prague";
   const businessHoursStart = 9;   // 9:00
   const businessHoursEnd = 17;    // 17:00
   const slotMinutes = 30;
@@ -434,15 +434,15 @@ The "Set Date Range" node creates two values, evaluated server-side at request t
 `timeMin` (string, expression):
 ```
 ={{ $json.body.preferred_date
-     ? $json.body.preferred_date + 'T00:00:00.000-05:00'
-     : $now.setZone('America/Chicago').startOf('day').toISO() }}
+     ? $json.body.preferred_date + 'T00:00:00.000+01:00'
+     : $now.setZone('Europe/Prague').startOf('day').toISO() }}
 ```
 
 `timeMax` (string, expression):
 ```
 ={{ $json.body.preferred_date
-     ? $json.body.preferred_date + 'T23:59:59.999-05:00'
-     : $now.setZone('America/Chicago').plus({ days: 4 }).startOf('day').toISO() }}
+     ? $json.body.preferred_date + 'T23:59:59.999+01:00'
+     : $now.setZone('Europe/Prague').plus({ days: 4 }).startOf('day').toISO() }}
 ```
 
 (Note: range is "today + next 3 business days" inclusive — we set timeMax to start of day+4 so the slot generator naturally bounds within 4 calendar days; weekends are filtered in the JS.)
@@ -602,7 +602,7 @@ validate_node({
     additionalFields: {
       summary: "=Sales Consultation — {{ $('Webhook').item.json.body.customer_name }}",
       description: "=Phone: {{ $('Webhook').item.json.body.customer_phone }}\nEstimated storage: {{ $('Webhook').item.json.body.shipment_size || 'not specified' }}\nBooked via Crown Storage AI Voice Agent",
-      timezone: "America/Chicago"
+      timezone: "Europe/Prague"
     }
   },
   profile: "runtime"
@@ -616,11 +616,11 @@ The "Compose DateTime" Set node creates two string fields:
 
 `startISO`:
 ```
-={{ DateTime.fromFormat($('Webhook').item.json.body.date + ' ' + $('Webhook').item.json.body.time, 'yyyy-MM-dd h:mm a', { zone: 'America/Chicago' }).toISO() }}
+={{ DateTime.fromFormat($('Webhook').item.json.body.date + ' ' + $('Webhook').item.json.body.time, 'yyyy-MM-dd h:mm a', { zone: 'Europe/Prague' }).toISO() }}
 ```
 `endISO`:
 ```
-={{ DateTime.fromFormat($('Webhook').item.json.body.date + ' ' + $('Webhook').item.json.body.time, 'yyyy-MM-dd h:mm a', { zone: 'America/Chicago' }).plus({ minutes: 30 }).toISO() }}
+={{ DateTime.fromFormat($('Webhook').item.json.body.date + ' ' + $('Webhook').item.json.body.time, 'yyyy-MM-dd h:mm a', { zone: 'Europe/Prague' }).plus({ minutes: 30 }).toISO() }}
 ```
 
 (`DateTime` is Luxon, exposed in n8n expressions.)
@@ -670,7 +670,7 @@ n8n_create_workflow({
         additionalFields: {
           summary: "=Sales Consultation — {{ $('Webhook').item.json.body.customer_name }}",
           description: "=Phone: {{ $('Webhook').item.json.body.customer_phone }}\nEstimated storage: {{ $('Webhook').item.json.body.shipment_size || 'not specified' }}\nBooked via Crown Storage AI Voice Agent",
-          timezone: "America/Chicago"
+          timezone: "Europe/Prague"
         }
       },
       credentials: { googleCalendarOAuth2Api: { id: "<calendar-cred-id>", name: "<calendar-cred-name>" } } },
@@ -682,7 +682,7 @@ n8n_create_workflow({
         sendTo: "szergej.soros@gmail.com",
         subject: "=Booking confirmed — {{ $('Webhook').item.json.body.customer_name }} on {{ $('Webhook').item.json.body.date }} {{ $('Webhook').item.json.body.time }}",
         emailType: "html",
-        message: "=<h2>Consultation booked</h2><p><strong>Name:</strong> {{ $('Webhook').item.json.body.customer_name }}</p><p><strong>Phone:</strong> {{ $('Webhook').item.json.body.customer_phone }}</p><p><strong>Estimated storage:</strong> {{ $('Webhook').item.json.body.shipment_size || '—' }}</p><p><strong>When:</strong> {{ $('Webhook').item.json.body.date }} at {{ $('Webhook').item.json.body.time }} (America/Chicago)</p><p><strong>Calendar event:</strong> {{ $('Create Calendar Event').item.json.id }}</p>",
+        message: "=<h2>Consultation booked</h2><p><strong>Name:</strong> {{ $('Webhook').item.json.body.customer_name }}</p><p><strong>Phone:</strong> {{ $('Webhook').item.json.body.customer_phone }}</p><p><strong>Estimated storage:</strong> {{ $('Webhook').item.json.body.shipment_size || '—' }}</p><p><strong>When:</strong> {{ $('Webhook').item.json.body.date }} at {{ $('Webhook').item.json.body.time }} (Europe/Prague)</p><p><strong>Calendar event:</strong> {{ $('Create Calendar Event').item.json.id }}</p>",
         options: {}
       },
       credentials: { gmailOAuth2: { id: "<gmail-cred-id>", name: "<gmail-cred-name>" } } },

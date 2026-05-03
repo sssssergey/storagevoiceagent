@@ -39,7 +39,7 @@
       "parameters": {
         "mode": "runOnceForAllItems",
         "language": "javaScript",
-        "jsCode": "const body = $('Webhook').first().json.body || {};\nconst tz = 'America/Chicago';\n\nconst start = DateTime.fromFormat(body.date + ' ' + body.time, 'yyyy-MM-dd h:mm a', { zone: tz });\nif (!start.isValid) {\n  throw new Error('Invalid date/time: ' + body.date + ' ' + body.time + ' — ' + start.invalidReason);\n}\nconst end = start.plus({ minutes: 30 });\n\nreturn [{\n  json: {\n    startISO: start.toISO(),\n    endISO: end.toISO(),\n    customer_name: body.customer_name,\n    customer_phone: body.customer_phone,\n    shipment_size: body.shipment_size || 'not specified',\n    date: body.date,\n    time: body.time\n  }\n}];"
+        "jsCode": "const body = $('Webhook').first().json.body || {};\nconst tz = 'Europe/Prague';\n\nconst start = DateTime.fromFormat(body.date + ' ' + body.time, 'yyyy-MM-dd h:mm a', { zone: tz });\nif (!start.isValid) {\n  throw new Error('Invalid date/time: ' + body.date + ' ' + body.time + ' — ' + start.invalidReason);\n}\nconst end = start.plus({ minutes: 30 });\n\nreturn [{\n  json: {\n    startISO: start.toISO(),\n    endISO: end.toISO(),\n    customer_name: body.customer_name,\n    customer_phone: body.customer_phone,\n    shipment_size: body.shipment_size || 'not specified',\n    date: body.date,\n    time: body.time\n  }\n}];"
       },
       "id": "compose-1",
       "name": "Compose DateTime",
@@ -60,7 +60,7 @@
         "additionalFields": {
           "summary": "=Sales Consultation — {{ $json.customer_name }}",
           "description": "=Phone: {{ $json.customer_phone }}\nEstimated storage: {{ $json.shipment_size }}\nBooked via Crown Storage AI Voice Agent",
-          "timezone": "America/Chicago"
+          "timezone": "Europe/Prague"
         }
       },
       "id": "cal-1",
@@ -82,7 +82,7 @@
         "sendTo": "szergej.soros@gmail.com",
         "subject": "=Booking confirmed — {{ $('Compose DateTime').item.json.customer_name }} on {{ $('Compose DateTime').item.json.date }} {{ $('Compose DateTime').item.json.time }}",
         "emailType": "html",
-        "message": "=<h2>Consultation booked</h2><p><strong>Name:</strong> {{ $('Compose DateTime').item.json.customer_name }}</p><p><strong>Phone:</strong> {{ $('Compose DateTime').item.json.customer_phone }}</p><p><strong>Estimated storage:</strong> {{ $('Compose DateTime').item.json.shipment_size }}</p><p><strong>When:</strong> {{ $('Compose DateTime').item.json.date }} at {{ $('Compose DateTime').item.json.time }} (America/Chicago)</p><p><strong>Calendar event ID:</strong> {{ $json.id }}</p><hr><p><em>Booked via Crown Storage AI Voice Agent</em></p>",
+        "message": "=<h2>Consultation booked</h2><p><strong>Name:</strong> {{ $('Compose DateTime').item.json.customer_name }}</p><p><strong>Phone:</strong> {{ $('Compose DateTime').item.json.customer_phone }}</p><p><strong>Estimated storage:</strong> {{ $('Compose DateTime').item.json.shipment_size }}</p><p><strong>When:</strong> {{ $('Compose DateTime').item.json.date }} at {{ $('Compose DateTime').item.json.time }} (Europe/Prague)</p><p><strong>Calendar event ID:</strong> {{ $json.id }}</p><hr><p><em>Booked via Crown Storage AI Voice Agent</em></p>",
         "options": {}
       },
       "id": "gm-1",

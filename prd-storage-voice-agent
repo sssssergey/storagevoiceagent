@@ -1,0 +1,361 @@
+PRD: Storage Company Landing Page with AI Voice Agent
+Project Overview
+Build a landing page for Crown Storage with an embedded ElevenLabs conversational AI voice agent. The agent assists prospects by answering questions from a knowledge base, collecting lead information, and scheduling sales consultations via Google Calendar — powered by n8n workflow automations on a self-hosted instance. No backend or database is needed — after each call, n8n sends an email with the collected lead details.
+Implementation mandate: The voice agent must be built using the ElevenLabs skills available in the Claude Code project. All n8n workflows must be built using the n8n skills available in the Claude Code project (`n8n-mcp-tools-expert`, `n8n-workflow-patterns`, `n8n-node-configuration`, `n8n-expression-syntax`, `n8n-validation-expert`, `n8n-code-javascript`, `n8n-code-python`). Always consult the relevant skills before implementing any component.
+---
+Architecture Summary
+```
+┌─────────────────────────────┐
+│   Crown Storage Landing Page│
+│   + ElevenLabs Widget       │
+│         │                   │
+└─────────┼───────────────────┘
+          │ (voice conversation)
+          ▼
+┌─────────────────────────────┐
+│   ElevenLabs Voice Agent    │
+│   - V3 Expressive Voice     │
+│   - Knowledge Base (MD)     │
+│   - Custom Tools            │
+│         │                   │
+└─────────┼───────────────────┘
+          │ (tool calls via webhook)
+          ▼
+┌─────────────────────────────┐
+│   n8n Workflows             │
+│   (self-hosted instance)    │
+│                             │
+│   1. Check Calendar Avail.  │
+│   2. Book Consultation      │
+│   3. Send Lead Email        │
+└─────────────────────────────┘
+          │
+          ▼
+┌──────────────┐  ┌───────────┐
+│ Google Cal.  │  │   Email   │
+│ (individual) │  │ (via n8n) │
+└──────────────┘  └───────────┘
+```
+---
+Component 1: Landing Page
+Requirements
+Single-page responsive landing page for Crown Storage
+Sections: Hero, Services, How It Works, Pricing tiers, FAQ, Contact/CTA
+Embedded ElevenLabs Conversational AI widget (floating button, bottom-right)
+Clean, professional, trust-building design — target audience: people moving or needing storage
+Mobile-first responsive layout
+Fast load time — no heavy frameworks unless justified
+Tech Stack
+HTML + Tailwind CSS + vanilla JS, OR React (single .html/.jsx artifact)
+ElevenLabs widget embedded via their official `<elevenlabs-convai>` web component or JS SDK
+No backend needed for the landing page itself
+ElevenLabs Widget Integration
+```html
+<!-- ElevenLabs Conversational AI Widget -->
+<script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+<elevenlabs-convai agent-id="YOUR_AGENT_ID"></elevenlabs-convai>
+```
+Alternatively, use the JS SDK for more control:
+```javascript
+import { Conversation } from '@11labs/client';
+
+const conversation = await Conversation.startSession({
+  agentId: 'YOUR_AGENT_ID',
+});
+```
+Design Direction
+Color palette: industrial blues, warm neutrals, orange/amber accents for CTAs
+Typography: bold sans-serif headers, readable body text
+Trust signals: security icons, customer count, testimonials placeholder
+Clear CTA: "Talk to our AI assistant" button that triggers the ElevenLabs widget
+---
+Component 2: ElevenLabs Voice Agent
+Build using ElevenLabs skills available in the Claude Code project. The project has dedicated ElevenLabs skills that define how to create, configure, and deploy conversational AI agents — including voice selection, system prompt structure, tool definitions, knowledge base setup, and widget embedding. Always consult these skills before implementing any voice agent component.
+Agent Configuration
+Setting	Value
+Voice model	V3 (Expressive)
+Voice	Select a warm, professional, friendly V3-compatible voice
+Language	English
+First message	"Hi there! Welcome to Crown Storage. I'm here to help you with any questions about our storage solutions. How can I assist you today?"
+Temperature	0.7 (natural but focused)
+System Prompt
+```
+You are a friendly and professional AI assistant for Crown Storage, a storage and moving storage company. Your role is to:
+
+1. GREET the caller warmly and introduce yourself
+2. ANSWER any questions about storage services, pricing, unit sizes, locations, security features, access hours, and policies using the provided knowledge base
+3. COLLECT lead information during the conversation naturally:
+   - Customer full name
+   - Customer phone number
+   - Estimated size of the shipment/items they want to store (e.g., "a few boxes", "a 1-bedroom apartment", "full house contents")
+4. SCHEDULE a consultation call with a sales representative when the customer is interested:
+   - Use the check_availability tool to find open time slots
+   - Present 2-3 available options to the customer
+   - Use the book_consultation tool to confirm the booking
+   - Confirm the date, time, and that a sales rep will call them
+
+Conversation guidelines:
+- Be conversational and natural — don't sound robotic or scripted
+- Don't ask for all information at once. Collect it organically through the conversation
+- If the customer asks a question not covered in the knowledge base, be honest and offer to have a sales rep follow up
+- Always confirm details before booking (name, phone, preferred time)
+- After booking, summarize: "Great, [name]! You're all set for [date/time]. Our sales rep will call you at [phone number]. Is there anything else I can help with?"
+- Keep responses concise — this is a voice conversation, not a text chat
+- Once you have collected the customer's name, phone, and shipment size, use the send_lead_email tool to send the lead details via email for follow-up
+```
+Knowledge Base (Markdown File)
+Create a file `knowledge-base.md` to upload to the ElevenLabs agent. Structure:
+```markdown
+# Crown Storage — Knowledge Base
+
+## About Us
+[Company description, years in business, locations]
+
+## Storage Unit Sizes & Pricing
+- **Small (5x5)**: ~25 sq ft — fits boxes, small furniture. $XX/month
+- **Medium (10x10)**: ~100 sq ft — fits 1-bedroom apartment. $XX/month
+- **Large (10x20)**: ~200 sq ft — fits 2-3 bedroom house. $XX/month
+- **Extra Large (10x30)**: ~300 sq ft — fits full house + vehicles. $XX/month
+
+## Services
+- Climate-controlled units
+- 24/7 access
+- Moving supplies available
+- Truck rental partnerships
+- Short-term and long-term contracts
+- Business storage solutions
+
+## Security
+- 24/7 video surveillance
+- Individual unit alarms
+- Gated access with personal code
+- On-site management
+
+## Policies
+- Month-to-month availability
+- Insurance options
+- Payment methods accepted
+- Cancellation policy
+- Move-in specials / promotions
+
+## FAQ
+[Common questions and answers]
+
+## Contact
+- Phone: [number]
+- Email: [email]
+- Address: [address]
+- Office hours: [hours]
+```
+Agent Tools (ElevenLabs Custom Tools)
+The agent needs 3 custom tools configured in ElevenLabs, each calling an n8n webhook.
+Tool 1: `check_availability`
+Description: Check available time slots for a sales consultation call
+Parameters:
+Parameter	Type	Required	Description
+`preferred_date`	string	No	Customer's preferred date (YYYY-MM-DD). If not provided, check next 3 business days
+Webhook URL: `https://n8n.srv983772.hstgr.cloud/webhook/check-availability`
+Expected response format:
+```json
+{
+  "available_slots": [
+    { "date": "2026-05-04", "time": "10:00 AM", "day": "Monday" },
+    { "date": "2026-05-04", "time": "2:00 PM", "day": "Monday" },
+    { "date": "2026-05-05", "time": "11:00 AM", "day": "Tuesday" }
+  ]
+}
+```
+Tool 2: `book_consultation`
+Description: Book a consultation call with a sales representative
+Parameters:
+Parameter	Type	Required	Description
+`customer_name`	string	Yes	Full name of the customer
+`customer_phone`	string	Yes	Phone number to call
+`date`	string	Yes	Booking date (YYYY-MM-DD)
+`time`	string	Yes	Booking time (e.g., "10:00 AM")
+`shipment_size`	string	No	Estimated storage size needed
+Webhook URL: `https://n8n.srv983772.hstgr.cloud/webhook/book-consultation`
+Expected response format:
+```json
+{
+  "success": true,
+  "booking_id": "BK-20260504-001",
+  "confirmed_date": "2026-05-04",
+  "confirmed_time": "10:00 AM",
+  "message": "Consultation booked successfully"
+}
+```
+Tool 3: `send_lead_email`
+Description: Send an email with collected lead information for follow-up
+Parameters:
+Parameter	Type	Required	Description
+`customer_name`	string	Yes	Full name
+`customer_phone`	string	Yes	Phone number
+`shipment_size`	string	Yes	Estimated storage size
+`notes`	string	No	Additional context from conversation
+Webhook URL: `https://n8n.srv983772.hstgr.cloud/webhook/send-lead-email`
+Expected response format:
+```json
+{
+  "success": true,
+  "message": "Lead email sent successfully"
+}
+```
+---
+Component 3: n8n Workflow Automations
+Build using n8n skills available in the Claude Code project. The project has the following n8n skills that must be consulted when implementing any workflow:
+n8n-mcp-tools-expert — for interacting with the n8n instance via MCP tools
+n8n-workflow-patterns — for webhook-response patterns, error handling, and workflow structure
+n8n-node-configuration — for configuring Google Calendar, Send Email, Gmail, and other nodes
+n8n-expression-syntax — for date calculations, template expressions, and dynamic values in nodes
+n8n-validation-expert — for input validation logic on webhook payloads
+n8n-code-javascript — for Code node logic (slot generation, data transformation)
+n8n-code-python — for Python-based Code nodes if needed
+Always consult the relevant skills before building or modifying any workflow.
+Instance: `https://n8n.srv983772.hstgr.cloud/home/workflows`
+Workflow 1: Check Calendar Availability
+Trigger: Webhook `GET /webhook/check-availability`
+Flow:
+```
+[Webhook Trigger] → [Set Date Range] → [Google Calendar: Get Events] → [Filter Busy Slots] → [Generate Available Slots] → [Respond to Webhook]
+```
+Detailed Steps:
+Webhook node — Path: `check-availability`, Method: POST, Response Mode: "Last Node"
+Set node — Calculate date range:
+If `preferred_date` is provided, check that single day
+Otherwise, calculate next 3 business days from today
+Define business hours: 9:00 AM – 5:00 PM
+Define slot duration: 30 minutes
+Google Calendar node — Action: "Get Many Events"
+Calendar: Individual Google Calendar (configure OAuth2 credential)
+Time Min: start of date range
+Time Max: end of date range
+Returns all existing events (busy times)
+Code node (JavaScript) — Generate available slots:
+Input: existing events + date range + business hours
+Logic: Create 30-min slots during business hours, remove any that overlap with existing events
+Skip weekends
+Return max 6 available slots
+Respond to Webhook node — Return JSON with `available_slots` array
+n8n Skills Reference: Use `n8n-node-configuration` for Google Calendar node setup, `n8n-code-javascript` for the slot generation logic, `n8n-expression-syntax` for date calculations in Set nodes, `n8n-validation-expert` for input validation.
+Workflow 2: Book Consultation
+Trigger: Webhook `POST /webhook/book-consultation`
+Flow:
+```
+[Webhook Trigger] → [Validate Input] → [Google Calendar: Create Event] → [Send Email: Lead Notification] → [Respond to Webhook]
+```
+Detailed Steps:
+Webhook node — Path: `book-consultation`, Method: POST, Response Mode: "Last Node"
+If node — Validate required fields exist: `customer_name`, `customer_phone`, `date`, `time`
+If missing → Respond with error
+Google Calendar node — Action: "Create Event"
+Calendar: Individual Google Calendar
+Summary: `"Sales Consultation — {{customer_name}}"`
+Description: `"Phone: {{customer_phone}}\nEstimated storage: {{shipment_size}}\nBooked via AI Voice Agent"`
+Start: Combine `date` + `time` into ISO datetime
+End: Start + 30 minutes
+Send Email node — Send lead notification email with booking confirmation details (name, phone, shipment size, booked time)
+Set node — Build response with `booking_id` (use calendar event ID), confirmed details
+Respond to Webhook node — Return success JSON
+n8n Skills Reference: Use `n8n-workflow-patterns` for webhook-response pattern, `n8n-node-configuration` for Google Calendar Create Event, `n8n-expression-syntax` for datetime formatting, `n8n-validation-expert` for input validation logic.
+Workflow 3: Send Lead Email
+Trigger: Webhook `POST /webhook/send-lead-email`
+Flow:
+```
+[Webhook Trigger] → [Validate Input] → [Send Email: Lead Details] → [Respond to Webhook]
+```
+Detailed Steps:
+Webhook node — Path: `send-lead-email`, Method: POST, Response Mode: "Last Node"
+If node — Validate `customer_name` and `customer_phone` exist
+Send Email node (use n8n's built-in Send Email node or Gmail node)
+To: your email address
+Subject: `"New Crown Storage Lead: {{customer_name}}"`
+Body (HTML):
+```
+     <h2>New Lead from AI Voice Agent</h2>
+     <p><strong>Name:</strong> {{customer_name}}</p>
+     <p><strong>Phone:</strong> {{customer_phone}}</p>
+     <p><strong>Estimated Shipment Size:</strong> {{shipment_size}}</p>
+     <p><strong>Notes:</strong> {{notes}}</p>
+     <p><strong>Received:</strong> {{timestamp}}</p>
+     <hr>
+     <p><em>Sent automatically by Crown Storage AI Voice Agent via n8n</em></p>
+     ```
+Respond to Webhook node — Return success JSON
+n8n Skills Reference: Use `n8n-node-configuration` for Send Email / Gmail node setup, `n8n-expression-syntax` for template expressions, `n8n-workflow-patterns` for error handling.
+n8n Implementation Notes
+No backend or database required — all lead data is sent via email, calendar events are the source of truth for bookings
+All webhooks must use "Respond to Webhook" as the last node (not "When Called by Another Workflow")
+Set webhook authentication to None initially for testing, then add header auth (`X-API-Key`) for production
+Google Calendar requires OAuth2 credential — set up in n8n credentials with Calendar scope (individual calendar)
+Email sending requires either SMTP credentials (for Send Email node) or Gmail OAuth2 (for Gmail node)
+Use Error Trigger workflow for monitoring failures
+All Code nodes should include try-catch blocks
+Test each webhook independently with curl/Postman before connecting to ElevenLabs
+Webhook Security (Production)
+Once testing is complete, add header-based authentication:
+```
+Header Name: X-API-Key
+Header Value: [generate-a-strong-key]
+```
+Configure the same key in ElevenLabs tool webhook headers.
+---
+Implementation Order
+Phase 1 — n8n Workflows (build and test first)
+Set up Google Calendar OAuth2 credential in n8n
+Set up email credentials (SMTP or Gmail OAuth2) in n8n
+Build Workflow 3 (Send Lead Email) — simplest, test webhook + email pattern
+Build Workflow 1 (Check Availability) — core calendar logic
+Build Workflow 2 (Book Consultation) — depends on calendar working
+Test all webhooks with curl
+Phase 2 — ElevenLabs Voice Agent
+Create agent in ElevenLabs dashboard
+Select V3 Expressive voice
+Configure system prompt (from above)
+Upload knowledge base markdown file
+Create 3 custom tools pointing to n8n webhooks
+Test conversation flow in ElevenLabs playground
+Phase 3 — Landing Page
+Build landing page with all sections
+Embed ElevenLabs widget
+Test end-to-end: page → widget → agent → n8n → Google Calendar
+Polish design and copy
+Phase 4 — Hardening
+Add webhook authentication
+Add error handling to all n8n workflows
+Test edge cases (no availability, invalid phone, calendar API down)
+Add rate limiting if needed
+Final QA on mobile + desktop
+---
+File Structure (Claude Code Project)
+```
+/
+├── PRD-storage-voice-agent.md      ← this file
+├── landing-page/
+│   ├── index.html                  ← main landing page
+│   └── assets/                     ← images, icons
+├── knowledge-base/
+│   └── knowledge-base.md           ← ElevenLabs KB upload
+├── n8n-workflows/
+│   ├── check-availability.json     ← exportable n8n workflow
+│   ├── book-consultation.json      ← exportable n8n workflow
+│   └── send-lead-email.json         ← exportable n8n workflow
+└── docs/
+    └── setup-guide.md              ← deployment instructions
+```
+---
+Success Criteria
+Voice agent greets naturally and handles common storage questions
+Agent collects name, phone, and shipment size without feeling like a form
+Calendar availability check returns real open slots from Google Calendar
+Booking creates a confirmed Google Calendar event with customer details
+Lead details arrive via email after each call with all collected info
+Landing page loads in under 3 seconds, looks professional on mobile
+End-to-end flow works: visitor → speaks with agent → books consultation → event appears in calendar + lead email received
+---
+Open Decisions
+Decision	Options	Notes
+Email method	n8n Send Email (SMTP) / Gmail node (OAuth2)	Gmail node is easiest if already using Google OAuth for Calendar
+Voice selection	Test 2-3 V3 voices	Pick the warmest, most trustworthy one
+Widget trigger	Auto-popup after X sec vs button only	Button-only is less intrusive
+Notification email address	TBD	Where lead emails should be delivered

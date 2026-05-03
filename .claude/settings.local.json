@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl *)",
+      "Bash(python -c \"import sys, json; d = json.load\\(sys.stdin\\); a = d.get\\('conversation_config', {}\\); print\\('name:', d.get\\('name'\\)\\); print\\('first_message:', a.get\\('agent', {}\\).get\\('first_message'\\)[:80] if a.get\\('agent', {}\\).get\\('first_message'\\) else None\\); p = a.get\\('agent', {}\\).get\\('prompt', {}\\); print\\('llm:', p.get\\('llm'\\)\\); print\\('voice_id:', a.get\\('tts', {}\\).get\\('voice_id'\\)\\); print\\('tts_model:', a.get\\('tts', {}\\).get\\('model_id'\\)\\); print\\('tools:', [t.get\\('name'\\) for t in p.get\\('tools', []\\)]\\); print\\('kb:', [k.get\\('name'\\) for k in p.get\\('knowledge_base', []\\)]\\)\")",
+      "Bash(npm run *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "n8n-mcp"
+  ]
+}

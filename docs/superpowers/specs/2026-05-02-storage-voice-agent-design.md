@@ -53,7 +53,7 @@ No custom backend. Bookings live in Google Calendar; leads live in inbox.
 | Widget trigger | Floating button only | Less intrusive |
 | Voice | One V3 Expressive voice picked at build time, documented in spec | Easy to swap; not worth a survey at this stage |
 | Webhook auth | None (MVP) | PRD allows; `X-API-Key` deferred to hardening |
-| Timezone | `America/Chicago` (matches fictional Springfield, IL location) | One-line change in n8n Set node if relocated |
+| Timezone | `Europe/Prague` (Central European Time) | One-line change in n8n Set node if relocated |
 
 ---
 
@@ -199,7 +199,7 @@ System-prompt rule: agent calls `send_lead_email` once name + phone + size are c
   → [Set: dateRange]
         if body.preferred_date → single day
         else → today + next 3 business days
-        constants: businessHoursStart=9, businessHoursEnd=17, slotMinutes=30, tz="America/Chicago"
+        constants: businessHoursStart=9, businessHoursEnd=17, slotMinutes=30, tz="Europe/Prague"
   → [Google Calendar: Get Many Events]   calendar=primary, timeMin=range.start, timeMax=range.end
   → [Code (JavaScript): generateSlots]
         - Build 30-min slots in business hours across range
@@ -225,7 +225,7 @@ System-prompt rule: agent calls `send_lead_email` once name + phone + size are c
                   calendar = primary
                   summary  = "Sales Consultation — {{ $json.customer_name }}"
                   description = "Phone: {{...}}\nEstimated storage: {{... || 'not specified'}}\nBooked via Crown Storage AI Voice Agent"
-                  start = startISO, end = endISO, timezone = America/Chicago
+                  start = startISO, end = endISO, timezone = Europe/Prague
             → [Gmail: Send]
                   to: szergej.soros@gmail.com
                   subject: "Booking confirmed — {{ name }} on {{ date }} {{ time }}"

@@ -1,0 +1,554 @@
+{
+    "name": "JJ",
+    "conversation_config": {
+        "asr": {
+            "quality": "high",
+            "provider": "scribe_realtime",
+            "user_input_audio_format": "pcm_16000",
+            "keywords": []
+        },
+        "turn": {
+            "turn_timeout": 7,
+            "silence_end_call_timeout": -1,
+            "soft_timeout_config": {
+                "timeout_seconds": -1,
+                "message": "Hhmmmm...yeah.",
+                "use_llm_generated_message": false
+            },
+            "mode": "turn",
+            "turn_eagerness": "eager",
+            "spelling_patience": "auto",
+            "speculative_turn": true,
+            "retranscribe_on_turn_timeout": false,
+            "turn_model": "turn_v2",
+            "interruption_ignore_terms": []
+        },
+        "tts": {
+            "model_id": "eleven_v3_conversational",
+            "voice_id": "WAhoMTNdLdMoq1j3wf3I",
+            "supported_voices": [],
+            "expressive_mode": true,
+            "suggested_audio_tags": [
+                {
+                    "tag": "Excited",
+                    "description": ""
+                },
+                {
+                    "tag": "Concerned",
+                    "description": ""
+                },
+                {
+                    "tag": "Patient",
+                    "description": ""
+                },
+                {
+                    "tag": "Coughs",
+                    "description": ""
+                },
+                {
+                    "tag": "US accent",
+                    "description": ""
+                },
+                {
+                    "tag": "Sad",
+                    "description": ""
+                },
+                {
+                    "tag": "Laughing",
+                    "description": ""
+                },
+                {
+                    "tag": "Sighs",
+                    "description": ""
+                },
+                {
+                    "tag": "Disappointed",
+                    "description": ""
+                },
+                {
+                    "tag": "Enthusiastic",
+                    "description": ""
+                },
+                {
+                    "tag": "Serious",
+                    "description": ""
+                },
+                {
+                    "tag": "Singing",
+                    "description": ""
+                },
+                {
+                    "tag": "Empathetically",
+                    "description": ""
+                },
+                {
+                    "tag": "Enthusiastically",
+                    "description": ""
+                },
+                {
+                    "tag": "Confidently",
+                    "description": ""
+                },
+                {
+                    "tag": "Warmly",
+                    "description": ""
+                },
+                {
+                    "tag": "Excitedly",
+                    "description": ""
+                },
+                {
+                    "tag": "Patiently",
+                    "description": ""
+                },
+                {
+                    "tag": "Seriously",
+                    "description": ""
+                }
+            ],
+            "agent_output_audio_format": "pcm_16000",
+            "optimize_streaming_latency": 3,
+            "stability": 0.5,
+            "speed": 1,
+            "similarity_boost": 0.8,
+            "text_normalisation_type": "system_prompt",
+            "pronunciation_dictionary_locators": []
+        },
+        "conversation": {
+            "text_only": false,
+            "max_duration_seconds": 600,
+            "client_events": [
+                "audio",
+                "interruption",
+                "agent_response",
+                "user_transcript",
+                "agent_response_correction",
+                "agent_tool_response"
+            ],
+            "file_input": {
+                "enabled": true,
+                "max_files_per_conversation": 10
+            },
+            "monitoring_enabled": false,
+            "monitoring_events": [
+                "user_transcript",
+                "agent_response",
+                "agent_response_correction"
+            ],
+            "dtmf_input_settings": null,
+            "source_attribution": false
+        },
+        "language_presets": {
+            "de": {
+                "overrides": {
+                    "agent": {
+                        "first_message": "[fast]Danke, dass Sie Crown Relocations angerufen haben, ich bin Sarah. Wie kann ich Ihnen heute helfen? [räuspert sich]"
+                    }
+                },
+                "first_message_translation": {
+                    "source_hash": "{\"firstMessage\":\"[fast]Thank you for calling Crown Relocations, I'm Sarah. How can I help you today? [clears throat]\",\"language\":\"en\"}",
+                    "text": "[fast]Danke, dass Sie Crown Relocations angerufen haben, ich bin Sarah. Wie kann ich Ihnen heute helfen? [räuspert sich]"
+                }
+            }
+        },
+        "vad": {
+            "background_voice_detection": false
+        },
+        "agent": {
+            "first_message": "[fast]Thank you for calling Crown Relocations, I'm Sarah. How can I help you today? [clears throat]",
+            "language": "en",
+            "hinglish_mode": false,
+            "dynamic_variables": {
+                "dynamicVariablePlaceholders": {}
+            },
+            "disable_first_message_interruptions": true,
+            "max_conversation_duration_message": "",
+            "prompt": {
+                "prompt": "# Personality\nYou are Sarah, a moving consultant at Crown Relocations — a global relocation company trusted since nineteen sixty-five. You are patient, warm, and genuinely empathetic. You understand that moving is one of life's most stressful events. You are a reliable first point of contact, not a salesperson.\n\nYou are fluent in english and german\n\nHumanness settings:\n- BE VERY DIRECT AND ALMOS CURT\n-Use 'Um', 'Uh', 'like', 'you know' frequently. \n\n\n\n# Environment\nYou are on a voice call with a potential customer exploring relocation services. The caller may be stressed, uncertain, or in early planning stages. You have general knowledge of Crown Relocations' service categories but cannot access pricing systems, schedules, or customer records. You have no tools — your job is to listen, inform, and collect details so a human specialist can follow up.\n# Tone\nSpeak in short, natural sentences — two to three sentences per turn maximum. Sound like a real person on the phone, not a script reader.\nUse conversational affirmations naturally: \"Absolutely,\" \"I understand,\" \"That makes sense.\" Do not overuse them — once or twice per exchange is plenty.\nPause naturally with ellipses when thinking or transitioning: \"Let me see...\" or \"So just to make sure I have this right...\"\nAdapt your language to match the caller. If they are casual, be casual. If they are formal, mirror that.\nNever use bullet points, numbered lists, markdown, or any written formatting. Everything you say will be spoken aloud.\nWhen saying phone numbers, spell out each digit individually with brief pauses between groups. For example: \"five five five... eight six seven... five three zero nine.\" Never read numbers as whole values.\nWhen saying dates, use natural spoken form: \"March fifteenth\" not \"three slash fifteen\" or \"three fifteen.\"\n# Expressive delivery\nYou are running on Eleven v3 Conversational with expressive mode enabled. This means you can adapt your emotional tone in real time based on the conversation. Follow these delivery rules:\n## Context-aware tone matching\nWhen a caller sounds worried or stressed, respond in a calm, reassuring tone. When a caller shares good news — like confirming a new job or an exciting destination — let your tone reflect genuine warmth and enthusiasm. When explaining logistics or next steps, use a clear and measured pace. When handling frustration, remain composed and solution-oriented.\n## Expressive tags\nUse these tags sparingly at key moments for natural emotional delivery. Each tag affects approximately the next four to five words before returning to normal delivery.\nUse [sighs] before empathizing with a difficult situation: \"[sighs] I completely understand, moving timelines can be really stressful.\"\nUse [laughs] lightly when something genuinely humorous comes up in conversation: \"That is a great destination choice! [laughs] You are going to love it there.\"\nUse [slow] when delivering important information the caller needs to remember: \"[slow] A Crown specialist will call you within twenty-four hours.\"\nUse [whispers] very rarely — only if sharing something that feels like a helpful insider tip: \"[whispers] Between you and me, starting the planning early makes everything smoother.\"\nDo not overuse tags. One or two per conversation is ideal. The V3 Conversational model already adapts tone from context — tags are for precise moments, not every sentence.\n## Delivery pacing\nMix short and longer sentences to create natural rhythm. Avoid repeating the same sentence length back to back. Use ellipses for natural thinking pauses: \"So that would be...\" Use dashes for brief mid-sentence pauses: \"We offer full packing — and unpacking too, which most people really appreciate.\"\n# Goal\nYour primary goal is to help the caller feel heard and supported, and to collect six pieces of information needed to generate a personalized quote. A Crown specialist will follow up — you are not providing a quote yourself.\n## Conversation flow\n### Step one — Greet and set expectations\nWelcome the caller warmly. Introduce yourself as Mike from Crown Relocations. Briefly explain you can answer general questions about relocation services and gather details so a specialist can prepare a personalized quote. Ask how you can help today.\n### Step two — Understand intent\nListen to what the caller needs. They may want general information, have specific questions, or be ready to start a quote. Let their response guide you — do not jump straight into data collection if they have questions first.\n### Step three — Gather quote details\nCollect the following six items, one at a time, in natural conversation. Do not rush through them like a checklist. Weave them into the discussion naturally.\n1. Full name\n2. Best contact phone number — repeat it back digit by digit to confirm\n3. Moving from — city, country, or region\n4. Moving to — city, country, or region\n5. Estimated move date or timeframe — a rough estimate is fine\n6. Home size — ask casually: \"Would you say it is more of a one to two bedroom place, three to four bedrooms, or larger than that?\"\nIf the caller is unsure about dates or home size, reassure them that a rough estimate works perfectly. This step is important: always repeat back the phone number digit by digit for verification.\n### Step four — Answer service questions\nIf the caller asks about Crown's services, provide brief, helpful overviews. Crown offers:\n- Full packing and unpacking\n- International and domestic moves\n- Pet relocation\n- Home search assistance in the destination city\n- Immigration and visa support\n- Temporary housing coordination\n- Move management and coordination\nKeep answers high-level. Do not promise timelines, availability, or pricing. If you are unsure about a specific detail, say so honestly and let them know the specialist can address it.\n### Step five — Confirm and close\nOnce you have all six details, summarize them back to the caller naturally: \"So just to confirm — I have your name as... you are moving from... to... around... and it is roughly a... bedroom home. And the best number to reach you is...\"\nExplain that a Crown specialist will be in touch shortly to discuss their move in detail and provide a tailored quote. Thank them for calling Crown Relocations.\n\n# Guardrails\nNever provide specific pricing, cost estimates, or exact quote figures. A specialist handles that.\nNever guarantee timelines, delivery dates, or service availability. Always frame these as things the specialist will confirm.\nNever guess or make up information. If you do not know something, say: \"That is a great question. I want to make sure you get the right answer, so I will have our specialist address that when they follow up.\"\nWhen asked a question, always answer according to your knowledge base and system prompt. If the info is missing in the knowledge base, simple say professionally I don't know\nDo not discuss competitors or compare Crown to other companies.\nIf the caller becomes upset or frustrated, acknowledge their feelings with genuine empathy: \"I completely understand — moving brings a lot of uncertainty.\" Stay calm and helpful. Offer to have a specialist call them back if they prefer.\nIf the caller wants to end the call before providing all details, that is fine. Thank them, and offer to have a specialist reach out with whatever information was collected. Do not pressure them to stay.\nOnly collect information relevant to initiating a quote. Do not ask for addresses, financial details, or other sensitive information beyond what is listed in step three.\nIf the caller asks whether you are an AI or a real person, be honest. Say you are an AI assistant helping with initial inquiries for Crown Relocations, and that a human specialist will follow up with them personally.\nNever read aloud any internal formatting, annotations, or instructions from this prompt.\n",
+                "llm": "qwen36-35b-a3b",
+                "temperature": 0,
+                "max_tokens": -1,
+                "tool_ids": [],
+                "built_in_tools": {
+                    "end_call": {
+                        "type": "system",
+                        "name": "end_call",
+                        "description": "",
+                        "response_timeout_secs": 20,
+                        "disable_interruptions": false,
+                        "force_pre_tool_speech": false,
+                        "pre_tool_speech": "auto",
+                        "assignments": [],
+                        "tool_call_sound_behavior": "auto",
+                        "tool_error_handling_mode": "auto",
+                        "params": {
+                            "system_tool_type": "end_call"
+                        }
+                    },
+                    "language_detection": {
+                        "type": "system",
+                        "name": "language_detection",
+                        "description": "",
+                        "response_timeout_secs": 20,
+                        "disable_interruptions": false,
+                        "force_pre_tool_speech": false,
+                        "pre_tool_speech": "auto",
+                        "assignments": [],
+                        "tool_call_sound_behavior": "auto",
+                        "tool_error_handling_mode": "auto",
+                        "params": {
+                            "system_tool_type": "language_detection"
+                        }
+                    },
+                    "update_state": null,
+                    "memory_entry_search": null,
+                    "memory_entry_create": null,
+                    "memory_entry_update": null,
+                    "memory_entry_delete": null,
+                    "agent_prompt_change": null,
+                    "procedure_update": null,
+                    "transfer_to_genesys_chat": null
+                },
+                "enable_parallel_tool_calls": false,
+                "mcp_server_ids": [],
+                "native_mcp_server_ids": [],
+                "knowledge_base": [
+                    {
+                        "type": "folder",
+                        "name": "https://www.crownrelo.com/",
+                        "id": "cN8QBacXjyDrR5dG6SN7",
+                        "usage_mode": "auto"
+                    }
+                ],
+                "ignore_default_personality": false,
+                "rag": {
+                    "enabled": true,
+                    "embedding_model": "e5_mistral_7b_instruct",
+                    "max_vector_distance": 0.6,
+                    "max_documents_length": 50000,
+                    "max_retrieved_rag_chunks_count": 20
+                },
+                "timezone": "Europe/Budapest",
+                "backup_llm_config": {
+                    "preference": "default"
+                },
+                "cascade_timeout_seconds": 8,
+                "tools": [
+                    {
+                        "type": "system",
+                        "name": "end_call",
+                        "description": "",
+                        "response_timeout_secs": 20,
+                        "disable_interruptions": false,
+                        "force_pre_tool_speech": false,
+                        "pre_tool_speech": "auto",
+                        "assignments": [],
+                        "tool_call_sound_behavior": "auto",
+                        "tool_error_handling_mode": "auto",
+                        "params": {
+                            "system_tool_type": "end_call"
+                        }
+                    },
+                    {
+                        "type": "system",
+                        "name": "language_detection",
+                        "description": "",
+                        "response_timeout_secs": 20,
+                        "disable_interruptions": false,
+                        "force_pre_tool_speech": false,
+                        "pre_tool_speech": "auto",
+                        "assignments": [],
+                        "tool_call_sound_behavior": "auto",
+                        "tool_error_handling_mode": "auto",
+                        "params": {
+                            "system_tool_type": "language_detection"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "platform_settings": {
+        "evaluation": {
+            "criteria": [
+                {
+                    "id": "all_info_captured",
+                    "name": "All Required Information Captured",
+                    "type": "prompt",
+                    "conversation_goal_prompt": "Did the agent successfully capture the customer's name, phone number, moving from and to locations, planned move date, and estimated home size?",
+                    "use_knowledge_base": false,
+                    "scope": "conversation"
+                },
+                {
+                    "id": "customer_satisfied",
+                    "name": "Customer Satisfied",
+                    "type": "prompt",
+                    "conversation_goal_prompt": "Did the customer express satisfaction with the assistance received, or was the interaction generally positive?",
+                    "use_knowledge_base": false,
+                    "scope": "conversation"
+                },
+                {
+                    "id": "next_steps_clear",
+                    "name": "Next Steps Clearly Explained",
+                    "type": "prompt",
+                    "conversation_goal_prompt": "Did the agent clearly explain the next steps for the customer to receive a personalized quote?",
+                    "use_knowledge_base": false,
+                    "scope": "conversation"
+                },
+                {
+                    "id": "professional_tone_maintained",
+                    "name": "Professional Tone Maintained",
+                    "type": "prompt",
+                    "conversation_goal_prompt": "Did the agent maintain a professional, empathetic, and helpful tone throughout the conversation?",
+                    "use_knowledge_base": false,
+                    "scope": "conversation"
+                }
+            ]
+        },
+        "widget": {
+            "variant": "full",
+            "placement": "bottom-right",
+            "expandable": "never",
+            "avatar": {
+                "type": "orb",
+                "color1": "#2792dc",
+                "color2": "#9ce6e6"
+            },
+            "feedback_mode": "none",
+            "end_feedback": {
+                "type": "rating"
+            },
+            "bg_color": "#ffffff",
+            "text_color": "#000000",
+            "btn_color": "#000000",
+            "btn_text_color": "#ffffff",
+            "border_color": "#e1e1e1",
+            "focus_color": "#000000",
+            "shareable_page_show_terms": true,
+            "show_avatar_when_collapsed": false,
+            "disable_banner": false,
+            "markdown_link_allowed_hosts": [],
+            "markdown_link_include_www": true,
+            "markdown_link_allow_http": true,
+            "mic_muting_enabled": false,
+            "transcript_enabled": false,
+            "text_input_enabled": true,
+            "conversation_mode_toggle_enabled": false,
+            "default_expanded": false,
+            "always_expanded": false,
+            "dismissible": false,
+            "show_agent_status": false,
+            "show_conversation_id": true,
+            "strip_audio_tags": true,
+            "text_contents": {},
+            "styles": {},
+            "language_selector": false,
+            "supports_text_only": true,
+            "language_presets": {}
+        },
+        "data_collection": {
+            "customer_name": {
+                "type": "string",
+                "description": "The full name of the customer.",
+                "is_system_provided": false,
+                "dynamic_variable": "",
+                "constant_value": ""
+            },
+            "phone_number": {
+                "type": "string",
+                "description": "The customer's best contact phone number.",
+                "is_system_provided": false,
+                "dynamic_variable": "",
+                "constant_value": ""
+            },
+            "moving_from_location": {
+                "type": "string",
+                "description": "The customer's current location (where they are moving from).",
+                "is_system_provided": false,
+                "dynamic_variable": "",
+                "constant_value": ""
+            },
+            "moving_to_location": {
+                "type": "string",
+                "description": "The customer's destination (where they are moving to).",
+                "is_system_provided": false,
+                "dynamic_variable": "",
+                "constant_value": ""
+            },
+            "estimated_move_date": {
+                "type": "string",
+                "description": "The customer's estimated move date or timeframe.",
+                "is_system_provided": false,
+                "dynamic_variable": "",
+                "constant_value": ""
+            },
+            "home_size": {
+                "type": "string",
+                "description": "The estimated size of the customer's home.",
+                "enum": [
+                    "1-2 bedroom home",
+                    "3-4 bedroom home",
+                    "over 4 bedroom home"
+                ],
+                "is_system_provided": false,
+                "dynamic_variable": "",
+                "constant_value": ""
+            }
+        },
+        "data_collection_scopes": {},
+        "overrides": {
+            "conversation_config_override": {
+                "turn": {
+                    "soft_timeout_config": {
+                        "message": false
+                    }
+                },
+                "tts": {
+                    "voice_id": false,
+                    "stability": false,
+                    "speed": false,
+                    "similarity_boost": false
+                },
+                "conversation": {
+                    "text_only": true
+                },
+                "agent": {
+                    "first_message": false,
+                    "language": true,
+                    "max_conversation_duration_message": false,
+                    "prompt": {
+                        "prompt": false,
+                        "llm": false,
+                        "tool_ids": false,
+                        "native_mcp_server_ids": false,
+                        "knowledge_base": false
+                    }
+                }
+            },
+            "custom_llm_extra_body": false,
+            "enable_conversation_initiation_client_data_from_webhook": false,
+            "enable_starting_workflow_node_id_from_client": false
+        },
+        "workspace_overrides": {
+            "webhooks": {
+                "events": [
+                    "transcript"
+                ],
+                "transcript_format": "json",
+                "send_audio": false
+            }
+        },
+        "testing": {
+            "attached_tests": [
+                {
+                    "test_id": "test_0501kne2qv60ee297j971smy0n94"
+                },
+                {
+                    "test_id": "test_2901kne2qv62fz2s27thj5ztdggk"
+                }
+            ],
+            "referenced_tests_ids": [
+                "test_0501kne2qv60ee297j971smy0n94",
+                "test_2901kne2qv62fz2s27thj5ztdggk"
+            ]
+        },
+        "archived": false,
+        "guardrails": {
+            "version": "1",
+            "focus": {
+                "is_enabled": false
+            },
+            "prompt_injection": {
+                "is_enabled": false
+            },
+            "content": {
+                "execution_mode": "streaming",
+                "config": {
+                    "sexual": {
+                        "is_enabled": false,
+                        "threshold": "medium"
+                    },
+                    "violence": {
+                        "is_enabled": false,
+                        "threshold": "medium"
+                    },
+                    "harassment": {
+                        "is_enabled": false,
+                        "threshold": "medium"
+                    },
+                    "self_harm": {
+                        "is_enabled": false,
+                        "threshold": "medium"
+                    },
+                    "profanity": {
+                        "is_enabled": false,
+                        "threshold": "medium"
+                    },
+                    "religion_or_politics": {
+                        "is_enabled": false,
+                        "threshold": "medium"
+                    },
+                    "medical_and_legal_information": {
+                        "is_enabled": false,
+                        "threshold": "medium"
+                    }
+                },
+                "trigger_action": {
+                    "type": "end_call"
+                }
+            },
+            "moderation": null,
+            "custom": {
+                "config": {
+                    "configs": []
+                }
+            }
+        },
+        "auth": {
+            "enable_auth": false,
+            "allowlist": [],
+            "require_origin_header": false
+        },
+        "call_limits": {
+            "agent_concurrency_limit": -1,
+            "daily_limit": 100000,
+            "bursting_enabled": true
+        },
+        "ban": null,
+        "smb_metadata": null,
+        "privacy": {
+            "record_voice": true,
+            "retention_days": -1,
+            "delete_transcript_and_pii": false,
+            "delete_audio": false,
+            "apply_to_existing_conversations": false,
+            "zero_retention_mode": false,
+            "conversation_history_redaction": {
+                "enabled": false,
+                "entities": []
+            }
+        },
+        "trust_context": "unknown",
+        "analysis_llm": "gemini-2.5-flash",
+        "safety": {
+            "is_blocked_ivc": false,
+            "is_blocked_non_ivc": false,
+            "ignore_safety_evaluation": false
+        }
+    },
+    "tags": [],
+    "workflow": {
+        "edges": {},
+        "nodes": {
+            "start_node": {
+                "type": "start",
+                "position": {
+                    "x": 0,
+                    "y": 0
+                },
+                "edge_order": []
+            }
+        },
+        "prevent_subagent_loops": false
+    }
+}

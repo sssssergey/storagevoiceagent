@@ -1,0 +1,14 @@
+{
+    "agents": [
+        {
+            "config": "agent_configs\\Crown-Storage-Assistant.json",
+            "id": "agent_1001kqm53ztdf5eaz0dv9mm639bc"
+        },
+        {
+            "config": "agent_configs\\JJ.json",
+            "id": "agent_1701kne2qv9ze0ra1ww9fse2tpeq",
+            "version_id": "agtvrsn_5601kqf7zdcve738jgbfv6bxdg3w",
+            "branch_id": "agtbrch_6601kne2qyskft7a0vv9fmsehy2x"
+        }
+    ]
+}
